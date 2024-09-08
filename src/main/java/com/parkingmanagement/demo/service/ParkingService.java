@@ -3,30 +3,35 @@ package com.parkingmanagement.demo.service;
 import com.parkingmanagement.demo.entities.ParkingEntity;
 import com.parkingmanagement.demo.entities.ParkingRecords;
 import com.parkingmanagement.demo.entities.VehicleEntity;
-import com.parkingmanagement.demo.repository.ParkingLotRepository;
-import com.parkingmanagement.demo.repository.ParkingRecordRepository;
-import com.parkingmanagement.demo.repository.VehicleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.parkingmanagement.demo.repository.ParkingLotRepo;
+import com.parkingmanagement.demo.repository.ParkingRecordRepo;
+import com.parkingmanagement.demo.repository.VehicleRepo;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@RequiredArgsConstructor
+@Transactional
 public class ParkingService {
 
-    @Autowired
-    private ParkingLotRepository parkingLotRepository;
+    private final VehicleRepo vehicleRepository;
 
-    @Autowired
-    private VehicleRepository vehicleRepository;
+    private final ParkingLotRepo parkingLotRepository;
 
-    @Autowired
-    private ParkingRecordRepository parkingRecordRepository;
+    private final ParkingRecordRepo parkingRecordRepository;
+
+    private static final Logger log = LoggerFactory.getLogger(ParkingService.class);
+
 
     public ParkingEntity registerParkingLot(ParkingEntity lot) {
+        log.info("Registering parking lot: {}", lot);
+
         return parkingLotRepository.save(lot);
     }
 
@@ -109,6 +114,7 @@ public class ParkingService {
         List<ParkingRecords> staleRecords = parkingRecordRepository.findAll().stream()
                 .filter(record -> record.getCheckInTime().isBefore(now.minusMinutes(15)) && record.getCheckOutTime() == null)
                 .toList();
+
 
         for (ParkingRecords record : staleRecords) {
             checkOutVehicle(record.getLicensePlate());

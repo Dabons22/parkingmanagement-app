@@ -2,7 +2,9 @@ package com.parkingmanagement.demo.scheduler;
 
 import com.parkingmanagement.demo.entities.ParkingEntity;
 import com.parkingmanagement.demo.entities.ParkingRecords;
+import com.parkingmanagement.demo.repository.ParkingLotRepo;
 import com.parkingmanagement.demo.repository.ParkingLotRepository;
+import com.parkingmanagement.demo.repository.ParkingRecordRepo;
 import com.parkingmanagement.demo.repository.ParkingRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -16,10 +18,10 @@ import java.util.stream.Collectors;
 @Component
 @EnableScheduling
 public class VehicleRemovalScheduler {
-    @Autowired
-    private ParkingRecordRepository parkingRecordRepository;
-    @Autowired
-    private ParkingLotRepository parkingLotRepository;
+
+    private ParkingRecordRepo parkingRecordRepository;
+
+    private ParkingLotRepo parkingLotRepository;
 
     @Scheduled(fixedRate = 60000) // Runs every minute
     public void removeStaleVehicles() {

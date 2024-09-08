@@ -3,9 +3,10 @@ package com.parkingmanagement.demo.service;
 import com.parkingmanagement.demo.entities.ParkingEntity;
 import com.parkingmanagement.demo.entities.ParkingRecords;
 import com.parkingmanagement.demo.entities.VehicleEntity;
-import com.parkingmanagement.demo.repository.ParkingLotRepository;
-import com.parkingmanagement.demo.repository.ParkingRecordRepository;
-import com.parkingmanagement.demo.repository.VehicleRepository;
+import com.parkingmanagement.demo.repository.ParkingLotRepo;
+import com.parkingmanagement.demo.repository.ParkingRecordRepo;
+import com.parkingmanagement.demo.repository.VehicleRepo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,18 +25,19 @@ import static org.mockito.Mockito.*;
 public class ParkingServiceTest {
 
     @Mock
-    private ParkingLotRepository parkingLotRepository;
+    private ParkingLotRepo parkingLotRepository;
 
     @Mock
-    private VehicleRepository vehicleRepository;
+    private VehicleRepo vehicleRepository;
 
     @Mock
-    private ParkingRecordRepository parkingRecordRepository;
+    private ParkingRecordRepo parkingRecordRepo;
 
     @InjectMocks
     private ParkingService parkingService;
 
-    public ParkingServiceTest() {
+    @BeforeEach
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -52,6 +54,7 @@ public class ParkingServiceTest {
 
         when(parkingLotRepository.findById("lot1")).thenReturn(Optional.of(lot));
         when(vehicleRepository.findById("ABC123")).thenReturn(Optional.of(vehicle));
+        when(parkingRecordRepo.findByLicensePlate("ABC123")).thenReturn(List.of());
 
         // When
         String result = parkingService.checkInVehicle("ABC123", "lot1");
@@ -59,7 +62,7 @@ public class ParkingServiceTest {
         // Then
         assertEquals("Vehicle checked in successfully", result);
         verify(parkingLotRepository, times(1)).save(lot);
-        verify(parkingRecordRepository, times(1)).save(any(ParkingRecords.class));
+        verify(parkingRecordRepo, times(1)).save(any(ParkingRecords.class));
     }
 
     @Test
@@ -76,7 +79,7 @@ public class ParkingServiceTest {
         lot.setCostPerMinute(0.05);
         lot.setOccupiedSpaces(1);
 
-        when(parkingRecordRepository.findByLicensePlate("ABC123")).thenReturn(List.of(record));
+        when(parkingRecordRepo.findByLicensePlate("ABC123")).thenReturn(List.of(record));
         when(parkingLotRepository.findById("lot1")).thenReturn(Optional.of(lot));
 
         // When
@@ -85,6 +88,6 @@ public class ParkingServiceTest {
         // Then
         assertTrue(result.startsWith("Vehicle checked out successfully"));
         verify(parkingLotRepository, times(1)).save(lot);
-        verify(parkingRecordRepository, times(1)).delete(record);
+        verify(parkingRecordRepo, times(1)).delete(record);
     }
 }

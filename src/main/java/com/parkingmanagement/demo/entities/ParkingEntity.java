@@ -24,4 +24,10 @@ public class ParkingEntity {
 
     @Column(name = "cost_per_minute")
     private double costPerMinute;
+
+    @Override
+    public String toString() {
+        return String.format("ParkingEntity(lotId=%s, location=%s, capacity=%d, occupiedSpaces=%d, costPerMinute=%.2f)",
+                lotId, location, capacity, occupiedSpaces, costPerMinute);
+    }
 }
