@@ -34,8 +34,8 @@ public class ParkingRecordRepo implements ParkingRecordAdapter {
     }
 
     @Override
-    public List<ParkingRecords> findAll() {
-        return parkingRecordRepository.findAll();
+    public List<ParkingRecords> findAll(ParkingRecords parkingRecords) {
+        return parkingRecordRepository.findAll(parkingRecords);
     }
 
 }

@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -20,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class ParkingService {
-    @Autowired
+
     private final VehicleRepo vehicleRepository;
 
     private final ParkingLotRepo parkingLotRepository;
