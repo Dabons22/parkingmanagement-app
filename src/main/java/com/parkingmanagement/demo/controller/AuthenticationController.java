@@ -4,7 +4,7 @@ import com.parkingmanagement.demo.config.JwtUtil;
 import com.parkingmanagement.demo.entities.AuthenticationRequest;
 import com.parkingmanagement.demo.entities.StaticCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,39 +19,12 @@ public class AuthenticationController {
     private StaticCredentials staticCredentials;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public String createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         if (StaticCredentials.USERNAME.equals(authenticationRequest.getUsername()) &&
                 StaticCredentials.PASSWORD.equals(authenticationRequest.getPassword())) {
-            String jwt = jwtUtil.generateToken(authenticationRequest.getUsername());
-            return ResponseEntity.ok(new AuthResponse(jwt)); // Return JWT in a structured JSON response
+            return jwtUtil.generateToken(authenticationRequest.getUsername());
         } else {
-            return ResponseEntity.status(401).body(new ErrorResponse("Incorrect username or password")); // Return error in a structured format
-        }
-    }
-
-    // Class to represent successful authentication response
-    public static class AuthResponse {
-        private String token;
-
-        public AuthResponse(String token) {
-            this.token = token;
-        }
-
-        public String getToken() {
-            return token;
-        }
-    }
-
-    // Class to represent error response
-    public static class ErrorResponse {
-        private String message;
-
-        public ErrorResponse(String message) {
-            this.message = message;
-        }
-
-        public String getMessage() {
-            return message;
+            throw new BadCredentialsException("Incorrect username or password");
         }
     }
 }
