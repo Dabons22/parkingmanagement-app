@@ -23,13 +23,13 @@ public class AuthenticationController {
         if (StaticCredentials.USERNAME.equals(authenticationRequest.getUsername()) &&
                 StaticCredentials.PASSWORD.equals(authenticationRequest.getPassword())) {
             String jwt = jwtUtil.generateToken(authenticationRequest.getUsername());
-            return ResponseEntity.ok(new AuthResponse(jwt)); // Return JWT in a structured JSON response
+            return ResponseEntity.ok(new AuthResponse(jwt));
         } else {
-            return ResponseEntity.status(401).body(new ErrorResponse("Incorrect username or password")); // Return error in a structured format
+            return ResponseEntity.status(401).body(new ErrorResponse("Incorrect username or password"));
         }
     }
 
-    // Class to represent successful authentication response
+
     public static class AuthResponse {
         private String token;
 
@@ -42,7 +42,7 @@ public class AuthenticationController {
         }
     }
 
-    // Class to represent error response
+
     public static class ErrorResponse {
         private String message;
 
